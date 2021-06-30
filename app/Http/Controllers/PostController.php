@@ -37,7 +37,6 @@ class PostController extends Controller
         $post->skills=$request->skills;
         $post->profile=$request->profile;
         $post->experience=$request->experience;
-
         $post->save();
 
         return [

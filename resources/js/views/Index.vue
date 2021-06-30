@@ -27,7 +27,7 @@
             <div class="representation-block">
                 <h5 style="color: floralwhite; text-transform: uppercase">{{ post.name }}</h5>
             </div>
-            <div class="profile-block">
+            <div class="profile-block mt-2">
                 <h4 >Profile</h4>
                 <p>
                     {{ post.profile}}
@@ -75,6 +75,10 @@ export default {
 
 <style scoped>
 
+*{
+    font-family: "Nunito", sans-serif;
+}
+
 .profile-header{
     color: #ffffff;
     background-color: #323026;
@@ -82,7 +86,6 @@ export default {
 }
 
 .container{
-    border: 1px solid black;
     box-shadow: 0 0 10px rgba(0,0,0,0.5);
 }
 

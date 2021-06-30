@@ -15,20 +15,20 @@ use App\Http\Controllers\AuthController;
 |
 */
 
+Route::post('/user/add',[AuthController::class, 'createUser'])
+    ->middleware('guest');
 
-
+Route::post('/user/login',[AuthController::class, 'loginUser'])
+    ->middleware('guest');
 
 Route::post('/post',[PostController::class, 'showPost']);
 
-Route::get('/user/login/{name}/{password}',[AuthController::class, 'logInUser'])
-    ->middleware('guest');
 Route::post('/post/edit/',[PostController::class, 'updatePost'])
     ->middleware('admin');
 
-Route::get('/user/create/{name}/{email}/{password}',[AuthController::class, 'register'])
-    ->middleware('guest');
 Route::get('/user/status/',[AuthController::class, 'getUserStatus']);
-Route::get('/user/logout/',[AuthController::class, 'logOutUser']);
+Route::get('/user/logout/',[AuthController::class, 'logOutUser'])
+    ->middleware('auth');
 
 Route::get('/{any}', function () {
     return view('index');
