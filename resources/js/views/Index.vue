@@ -9,18 +9,20 @@
             <div class="tool-block mt-2">
                 <h4 class="profile-header">Contacts</h4>
                 <h5>{{ post.email}}</h5>
-                <h5>{{ post.network}}</h5>
+                <div>
+                    <ul v-for="network in networkData">
+                        <li><a :href="network.link" class="network-link">{{network.name}}</a></li>
+                    </ul>
+                </div>
                 <h5>{{ post.number}}</h5>
-            </div>
-            <div class="tool-block mt-2">
                 <h4 class="profile-header">Education</h4>
                 <h5>{{ post.education}}</h5>
-            </div>
-            <div class="tool-block mt-2">
-                <h5 class="profile-header">Skills</h5>
-                <ul v-for="item in skills">
-                    <li>{{item}}</li>
-                </ul>
+                <h4 class="profile-header">Skills</h4>
+                <div>
+                    <ul v-for="item in skills">
+                        <li>{{item}}</li>
+                    </ul>
+                </div>
             </div>
         </div>
         <div class="col-md-9 p-4">
@@ -51,13 +53,25 @@ export default {
     data() {
         return {
             post: [],
-            skills:[]
+            skills:[],
+            networkData:[]
         }
     },
     created() {
         this.getData()
+        this.getNetworks()
     },
     methods: {
+        getNetworks(){
+            axios
+                .get('/post/network')
+                .then(response => {
+                    this.networkData=response.data
+                })
+                .catch(error => console.log(error))
+                .finally()
+
+        },
         getData() {
             axios
                 .post('/post')
@@ -116,5 +130,20 @@ export default {
     justify-content: center;
     align-items: center;
 }
+li {
+    list-style-type: none;
+}
+a{
+    text-decoration: none;
+    color: #2a2823;
+}
+
+.network-link:hover{
+    color: #46433a;
+
+}
+
+
+
 
 </style>

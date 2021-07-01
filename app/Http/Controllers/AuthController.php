@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 
 class AuthController extends Controller
@@ -45,7 +46,7 @@ class AuthController extends Controller
         {
             $user = new  User([
                 'name'=>$request->name,
-                'password'=>$request->password,
+                'password'=>bcrypt($request->password),
                 'email'=>$request->email,
                 'role'=>'user'
             ]);
@@ -56,9 +57,9 @@ class AuthController extends Controller
         return [
             'status' => true,
             'message' => 'registration was successful',
+            'role'=>$user->role
         ];
     }
-
 
     public function loginUser(Request $request){
         if (Auth::check()) {
@@ -81,9 +82,8 @@ class AuthController extends Controller
                 'errors'=>  $validator->messages()
             ];
         }
-
-        $user = User::where('name', '=', $request->name)->first();
-        if($user&&$user->password==$request->password){
+        $user = User::where('name', '=',$request->name)->first();
+        if($user&&Hash::check( $request->password ,$user->password)){
             Auth::login($user);
         }
         else
@@ -97,6 +97,7 @@ class AuthController extends Controller
         return [
             'status' => 'login',
             'message' => 'login was successful',
+            'role'=>$user->role
         ];
 
     }

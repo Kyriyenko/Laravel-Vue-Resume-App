@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
+use App\Models\Network;
 use Illuminate\Support\Facades\Validator;
 use App\Models\Post;
 use Illuminate\Http\Request;
@@ -11,6 +12,38 @@ class PostController extends Controller
     public function showPost(){
         $post = Post::all();
         response()->json($post, 200)->send();
+    }
+
+    public function getNetworks(){
+        return Network::all();
+    }
+
+    public function deleteNetwork(Request $request){
+        Network::find($request->id)->delete();
+
+        $result = [
+            'status' => true,
+            'message' => 'network was deleted',
+        ];
+
+        response()->json($result, 200)->send();
+    }
+
+    public function createNetwork(Request $request){
+
+        $network = new  Network([
+            'name'=>$request->name,
+            'link'=>$request->link,
+
+        ]);
+
+        $network->save();
+
+        return[
+            'status'=>true,
+            'message' => 'network was added',
+        ];
+
     }
 
     public function updatePost(Request $request){

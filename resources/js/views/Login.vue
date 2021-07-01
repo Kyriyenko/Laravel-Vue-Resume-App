@@ -26,22 +26,21 @@
                 <input v-model="password" type="password" class="form-control" placeholder="password" id="exampleInputPassword1">
             </div>
                 <button v-on:click="makeUserLogin" type="button" class="btn btn-success">LogIn</button>
-            <div v-if="isLogin" class="alert alert-success mt-2" role="alert">
+            <div v-if="isLogin" class="alert alert-success mt-3" role="alert">
                 {{ serverMessage}}
             </div>
-            <div v-if="isIncorrectData" class="mt-2">
+            <div v-if="isIncorrectData" class="mt-3">
                 <div  class="alert alert-danger" role="alert">
                     <ul v-for="error in errors">
                         <li>{{error.toString()}}</li>
                     </ul>
                 </div>
             </div>
-            <div v-if="userDoesNotExist" class="mt-2">
+            <div v-if="userDoesNotExist" class="mt-3">
                 <div  class="alert alert-danger" role="alert">
                     {{serverMessage}}
                 </div>
             </div>
-
         </form>
     </div>
 </div>
@@ -89,7 +88,6 @@ export default {
                 .catch(error => console.log(error))
                 .finally()
         },
-
     }
 
 }
@@ -99,7 +97,6 @@ export default {
 
 *{
     color: #6e7b87;
-    background-color: #f2f3f7;
 }
 
 form{
@@ -111,6 +108,7 @@ form{
     left:50%;
     transform:translate(-50%, -50%);
     box-shadow: 0 0 10px rgba(0,0,0,0.5);
+    background-color: #f2f3f7;
 }
 
 .reg-header{
@@ -129,5 +127,3 @@ button:hover{
 }
 
 </style>
-
-

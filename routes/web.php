@@ -15,6 +15,14 @@ use App\Http\Controllers\AuthController;
 |
 */
 
+Route::get('/post/network',[PostController::class, 'getNetworks']);
+
+Route::post('post/network/delete',[PostController::class, 'deleteNetwork'])
+    ->middleware('admin');
+
+Route::post('post/network/add',[PostController::class, 'createNetwork'])
+    ->middleware('admin');
+
 Route::post('/user/add',[AuthController::class, 'createUser'])
     ->middleware('guest');
 

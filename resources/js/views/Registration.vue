@@ -33,7 +33,7 @@
             <div v-if="isRegistration" class="alert alert-success mt-2" role="alert">
                 {{ serverMessage}}
             </div>
-            <div v-if="isIncorrectData" class="mt-2">
+            <div v-if="isIncorrectData" class="mt-3">
                 <div  class="alert alert-danger" role="alert">
                    <ul v-for="error in errors">
                        <li>{{error.toString()}}</li>
@@ -98,7 +98,6 @@ export default {
                 .catch(error => console.log(error))
                 .finally()
         },
-
     }
 }
 </script>
@@ -107,10 +106,10 @@ export default {
 
 *{
     color: #6e7b87;
-    background-color: #f2f3f7;
 }
 
 form{
+    background-color: #f2f3f7;
     padding: 45px  25px;
     border: 1px solid #59687c;
     position: absolute;
