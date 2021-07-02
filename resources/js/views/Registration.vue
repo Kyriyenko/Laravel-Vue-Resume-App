@@ -8,18 +8,24 @@
         </div>
         <form v-if="userRole==='guest'">
             <div class="row justify-content-center">
+                <div class="col mt-2">
+                    <hr class="dropdown-divider">
+                </div>
                 <div class="col reg-header">
                     <h3>Register</h3>
+                </div>
+                <div class="col mt-2">
+                    <hr class="dropdown-divider">
                 </div>
             </div>
             <div class="row justify-content-center">
                 <div class="col reg-header">
-                    <h5>Create your own account its free.</h5>
+                    <h5>Create your own account.</h5>
                 </div>
             </div>
             <div class="mb-3">
                 <label for="exampleInputName1" class="form-label">Your Name</label>
-                <input v-model="name" type="text" class="form-control" placeholder="name" id="exampleInputName1" aria-describedby="emailHelp">
+                <input v-model="name" type="text" class="form-control" placeholder="first name" id="exampleInputName1" aria-describedby="emailHelp">
             </div>
             <div class="mb-3">
                 <label for="exampleInputEmail1" class="form-label">Email address</label>
@@ -29,8 +35,15 @@
                 <label for="exampleInputPassword1"  class="form-label">Password</label>
                 <input v-model="password" type="password" placeholder="password" class="form-control" id="exampleInputPassword1">
             </div>
-            <button v-on:click="makeUserRegistration" type="button" class="btn btn-success">Registrate</button>
-            <div v-if="isRegistration" class="alert alert-success mt-2" role="alert">
+            <div class="form-check">
+                <input v-on:click="isRulesAccepted=!isRulesAccepted" class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
+                <label class="form-check-label" for="flexCheckDefault">
+                    I accept <span>The Terms of Use</span> & <span>Privacy Policy</span>.
+                </label>
+            </div>
+            <span v-if="isRegistrationFormError" class="input-error">checkbox should be checked</span>
+            <button v-on:click="makeUserRegistration" type="button" class="btn btn-success mt-2">Register Now</button>
+            <div v-if="isRegistrationSuccess" class="alert alert-success mt-2" role="alert">
                 {{ serverMessage}}
             </div>
             <div v-if="isIncorrectData" class="mt-3">
@@ -59,23 +72,28 @@ export default {
             email:'',
             password:'',
             userRole:sessionStorage.getItem('role'),
-            isRegistration:false,
+            isRegistrationSuccess:false,
             serverMessage:'',
             errors:{},
             isIncorrectData:false,
-            uniqueUser:true
+            uniqueUser:true,
+            isRulesAccepted:false,
+            isRegistrationFormError:false
         }
     },
-
     methods: {
         makeUserRegistration() {
             this.uniqueUser=true
             this.isIncorrectData=false
-            this.isRegistration=false
+            this.isRegistrationSuccess=false
+            this.isRegistrationFormError=false
+            if(!this.isRulesAccepted){
+                this.isRegistrationFormError=true
+                return;
+            }
             axios
                 .post('/user/add',{name:this.name,email:this.email,password:this.password})
                 .then(response => {
-                    console.log(response)
                     let isQuerySuccess=response.data.status
                     if(response.data.unique==='null'){
                         this.uniqueUser=false
@@ -83,9 +101,9 @@ export default {
                         return;
                     }
                     if(isQuerySuccess){
-                        this.isRegistration=response.data.status
+                        this.isRegistrationSuccess=response.data.status
                         this.serverMessage=response.data.message.toString()
-                        if(this.isRegistration){
+                        if(this.isRegistrationSuccess){
                             setTimeout(()=>{
                                 window.location.replace('/');
                             }, 1000);
@@ -103,10 +121,6 @@ export default {
 </script>
 
 <style scoped>
-
-*{
-    color: #6e7b87;
-}
 
 form{
     background-color: #f2f3f7;
@@ -126,7 +140,7 @@ form{
 }
 
 button{
- background-color: #419741;
+    background-color: #419741;
     color: #ffffff;
 }
 
@@ -134,5 +148,25 @@ button:hover{
     background-color: #64bb64;
 }
 
+li{
+    list-style-type: none;
+}
+
+*{
+    color: #6e7b87;
+    font-family: 'Nunito', sans-serif;
+}
+
+button{
+    width: 100%;
+}
+
+span{
+    color:#7ec88d;
+}
+
+.input-error{
+    color: #e3342f;
+}
 
 </style>

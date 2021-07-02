@@ -8,8 +8,14 @@
         </div>
         <form v-if="userRole==='guest'">
             <div class="row justify-content-center">
+                <div class="col mt-2">
+                    <hr class="dropdown-divider">
+                </div>
                 <div class="col reg-header">
                     <h3>LogIn</h3>
+                </div>
+                <div class="col mt-2">
+                    <hr class="dropdown-divider">
                 </div>
             </div>
             <div class="row justify-content-center">
@@ -25,7 +31,14 @@
                 <label  for="exampleInputPassword1" class="form-label">Password</label>
                 <input v-model="password" type="password" class="form-control" placeholder="password" id="exampleInputPassword1">
             </div>
-                <button v-on:click="makeUserLogin" type="button" class="btn btn-success">LogIn</button>
+            <div class="form-check">
+                <input v-on:click="isRulesAccepted=!isRulesAccepted" class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
+                <label class="form-check-label" for="flexCheckDefault">
+                    I accept <span>The Terms of Use</span> & <span>Privacy Policy</span>.
+                </label>
+            </div>
+            <span v-if="isLoginFormError" class="input-error">checkbox should be checked</span>
+                <button v-on:click="makeUserLogin" type="button" class="btn btn-success mt-2">LogIn</button>
             <div v-if="isLogin" class="alert alert-success mt-3" role="alert">
                 {{ serverMessage}}
             </div>
@@ -58,13 +71,20 @@ export default {
             isLogin:false,
             serverMessage:'',
             errors:{},
-            isIncorrectData:false
+            isIncorrectData:false,
+            isRulesAccepted:false,
+            isLoginFormError:false
         }
     },
     methods: {
         makeUserLogin() {
             this.userDoesNotExist=false
             this.isIncorrectData=false
+            this.isLoginFormError=false
+            if(!this.isRulesAccepted){
+                this.isLoginFormError=true
+                return;
+            }
             axios
                 .post('/user/login',{name:this.name,password:this.password})
                 .then(response => {
@@ -95,10 +115,6 @@ export default {
 
 <style scoped>
 
-*{
-    color: #6e7b87;
-}
-
 form{
     padding: 45px  20px;
     border: 1px solid #59687c;
@@ -125,5 +141,26 @@ button{
 button:hover{
     background-color: #64bb64;
 }
+
+li{
+    list-style-type: none;
+}
+
+*{
+    color: #6e7b87;
+    font-family: 'Nunito', sans-serif;
+}
+button{
+    width: 100%;
+}
+
+span{
+    color:#7ec88d;
+}
+
+.input-error{
+    color: #e3342f;
+}
+
 
 </style>

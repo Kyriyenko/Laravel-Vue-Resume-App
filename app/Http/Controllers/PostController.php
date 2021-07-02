@@ -5,13 +5,11 @@ use App\Models\Network;
 use Illuminate\Support\Facades\Validator;
 use App\Models\Post;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 
 class PostController extends Controller
 {
     public function showPost(){
-        $post = Post::all();
-        response()->json($post, 200)->send();
+        return Post::all();
     }
 
     public function getNetworks(){
@@ -26,15 +24,25 @@ class PostController extends Controller
             'message' => 'network was deleted',
         ];
 
-        response()->json($result, 200)->send();
+        return $result;
     }
 
     public function createNetwork(Request $request){
+        $validator = Validator::make($request->all(), [
+            'name' => 'required',
+            'link' => 'required|min:10',
+        ]);
+
+        if ($validator->fails()) {
+            return [
+                'status'=>false,
+                'errors'=> $validator->messages()
+            ];
+        }
 
         $network = new  Network([
             'name'=>$request->name,
             'link'=>$request->link,
-
         ]);
 
         $network->save();
@@ -43,28 +51,29 @@ class PostController extends Controller
             'status'=>true,
             'message' => 'network was added',
         ];
-
     }
 
     public function updatePost(Request $request){
-        if (!Auth::check()) {
-            exit();
-        }
+        $validator = Validator::make($request->all(), [
+            'name' => 'required',
+            'email' => 'required|email',
+            'number' => 'required|min:7',
+            'education' => 'required',
+            'skills' => 'required',
+            'profile' => 'required',
+            'experience' => 'required',
+        ]);
 
-        $user = Auth::user();
-        $role=$user['role'];
-
-        if($role!=='admin'){
+        if ($validator->fails()) {
             return [
-                'status' => false,
-                'message' => 'You do not have access to this doing',
+                'status'=>false,
+                'errors'=> $validator->messages()
             ];
         }
 
         $post = Post::find($request->id);
         $post->name=$request->name;
         $post->email=$request->email;
-        $post->network=$request->network;
         $post->number=$request->number;
         $post->education=$request->education;
         $post->skills=$request->skills;

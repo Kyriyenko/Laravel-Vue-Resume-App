@@ -45,24 +45,17 @@ export default {
             axios
                 .get(`/user/status/`)
                 .then(response => {
-                 this.CurrentRole=response.data.toString()
+                    this.CurrentRole=response.data.toString()
                     sessionStorage.setItem('role',`${this.CurrentRole}`)
                 })
                 .catch(error => console.log(error))
                 .finally()
         },
-
     }
-
-
 }
 </script>
 
 <style scoped>
-
-router-link{
-    color: #ffff;
-}
 
 .container-fluid{
     background-color: #53b090;
@@ -71,7 +64,5 @@ router-link{
 .nav-link:hover{
     background-color: #2b652b;
 }
-
-
 
 </style>

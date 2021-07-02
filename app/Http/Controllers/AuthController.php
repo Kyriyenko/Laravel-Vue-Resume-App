@@ -16,8 +16,8 @@ class AuthController extends Controller
             exit();
         }
 
-        $uniqueUser=User::where('name', '=', $request->name)->first();
-        if($uniqueUser){
+        $IsUniqueUserExists=User::where('name', '=', $request->name)->first();
+        if($IsUniqueUserExists){
             return [
                 'unique' => 'null',
                 'message' => 'this name is already taken',

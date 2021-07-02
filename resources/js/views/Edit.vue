@@ -1,16 +1,16 @@
 <template>
 <div>
-    <div class="container-fluid mt-5">
+    <div class="container mt-5">
         <div v-if="userRole!=='admin'" class="alert alert-warning" role="alert">
             You do not have access to this page
         </div>
     </div>
     <div v-show="postUpdateStatus">
-        <div  class="alert alert-success mt-3" role="alert">
+        <div  class="alert alert-success mt-3 container" role="alert">
             {{ serverMessage }}
         </div>
     </div>
-    <div v-if="userRole==='admin'" class="container mt-4">
+    <div v-if="userRole==='admin'" class="container maine-container mt-4">
         <div class="row">
             <div class="col-md-9">
                 <div class="mb-3">
@@ -20,6 +20,10 @@
                 <div class="mb-3">
                     <label for="exampleFormControlInput2" class="form-label">Email address</label>
                     <input  v-model="post.email" type="email" class="form-control" id="exampleFormControlInput2" >
+                </div>
+                <div class="mb-3">
+                    <label for="exampleFormControlInput8" class="form-label">Education</label>
+                    <input  v-model="post.education" type="email" class="form-control" id="exampleFormControlInput8" >
                 </div>
                 <div class="mb-3">
                     <label for="exampleFormControlInput5" class="form-label">Contact number</label>
@@ -38,6 +42,13 @@
                     <textarea v-model="post.skills" class="form-control" id="exampleFormControlTextarea3" rows="3">{{post.skills}}</textarea>
                 </div>
                 <button  v-on:click="updateUserInfo" type="button" class="btn btn-primary">Save changes</button>
+                <div v-show="isError" class="mt-3">
+                    <div class="alert alert-danger" role="alert">
+                        <ul v-for="error in errorMessage">
+                            <li>{{error.toString()}}</li>
+                        </ul>
+                    </div>
+                </div>
             </div>
             <div class="col-md-3">
                 <h2>Networks</h2>
@@ -71,6 +82,13 @@
                         </tr>
                         </tbody>
                     </table>
+                    <div v-show="isCreateNetworkError" class="mt-3">
+                        <div class="alert alert-danger" role="alert">
+                            <ul v-for="error in networkCreateErrorMessage">
+                                <li>{{error.toString()}}</li>
+                            </ul>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -84,12 +102,16 @@ export default {
     data() {
         return {
             post: {},
-            postUpdateStatus:'',
+            postUpdateStatus:false,
             serverMessage:'',
             userRole:sessionStorage.getItem('role'),
             networkName:'',
             networkLink:'',
-            networkData:[]
+            networkData:[],
+            isError:false,
+            errorMessage:[],
+            isCreateNetworkError:false,
+            networkCreateErrorMessage:[]
         }
     },
     created() {
@@ -109,18 +131,22 @@ export default {
                 .finally()
         },
         addNetworks(){
+            this.isCreateNetworkError=false
             axios
                 .post(`post/network/add`,{name:this.networkName,link:this.networkLink})
                 .then(response => {
-                    this.responseFromNetwork=response.data.message.toString()
-                    console.log( this.responseFromNetwork)
+                    if(response.data.status){
+                        this.responseFromNetwork=response.data.message.toString()
+                        this.getNetworks()
+                        this.networkName=''
+                        this.networkLink=''
+                    }else {
+                        this.isCreateNetworkError=true
+                        this.networkCreateErrorMessage=response.data.errors
+                    }
                 })
                 .catch(error => console.log(error))
-                .finally(()=>{
-                    this.getNetworks()
-                    this.networkName=''
-                    this.networkLink=''
-                })
+                .finally()
         },
         getNetworks(){
             axios
@@ -144,8 +170,17 @@ export default {
             axios
                 .post(`post/edit`,this.post)
                 .then(response => {
-                    this.postUpdateStatus=response.data.status
-                    this.serverMessage=response.data.message
+                    if(response.data.status===true){
+                        this.postUpdateStatus=response.data.status
+                        this.serverMessage=response.data.message
+                        setTimeout(()=>{
+                            this.postUpdateStatus=false
+                        },1000)
+                    }
+                    else {
+                        this.isError=true
+                        this.errorMessage=response.data.errors
+                    }
                 })
                 .catch(error => console.log(error))
                 .finally()
@@ -156,7 +191,7 @@ export default {
 
 <style scoped>
 
-    .container{
+    .maine-container{
         box-shadow: 0 0 10px rgba(0,0,0,0.5);
         padding: 25px ;
     }
