@@ -4,7 +4,7 @@ window.Vue = require('vue').default;
 
 
 import App from './components/App'
-import Header from './components/parts/Header'
+import Header from './components/navigation/Menu'
 import router from './router'
 
 Vue.component('v-header',Header);
