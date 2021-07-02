@@ -3,15 +3,15 @@ import Vue from 'vue';
 
 Vue.use(vueRouter);
 
-import Index from './views/Index'
-import Edit from './views/Edit'
-import Login from './views/Login'
-import Registration from './views/Registration'
+import Home from './components/pages/Home'
+import Edit from './components/pages/Edit'
+import Login from './components/pages/Login'
+import Registration from './components/pages/Registration'
 
 const routes=[
     {
         path:'/',
-        component:Index
+        component:Home
     },
     {
         path:'/edit',
@@ -28,9 +28,7 @@ const routes=[
 
 ];
 
-
 export default new vueRouter({
    mode:'history',
    routes:routes
-
 });

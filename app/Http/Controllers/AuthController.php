@@ -12,22 +12,18 @@ class AuthController extends Controller
 {
     public function createUser(Request $request)
     {
-        if (Auth::check()) {
-            exit();
-        }
-
-        $IsUniqueUserExists=User::where('name', '=', $request->name)->first();
-        if($IsUniqueUserExists){
+        $IsUniqueUserExists = User::where('name', '=', $request->name)->first();
+        if ($IsUniqueUserExists) {
             return [
                 'unique' => 'null',
                 'message' => 'this name is already taken',
             ];
         }
 
-        $user=[
-            'name'=>$request->name,
-            'email'=>$request->email,
-            'password'=>$request->password
+        $user = [
+            'name' => $request->name,
+            'email' => $request->email,
+            'password' => $request->password
         ];
 
         $validator = Validator::make($user, [
@@ -38,17 +34,15 @@ class AuthController extends Controller
 
         if ($validator->fails()) {
             return [
-                'status'=>false,
-                'errors'=>  $validator->messages()
+                'status' => false,
+                'errors' => $validator->messages()
             ];
-        }
-        else
-        {
+        } else {
             $user = new  User([
-                'name'=>$request->name,
-                'password'=>bcrypt($request->password),
-                'email'=>$request->email,
-                'role'=>'user'
+                'name' => $request->name,
+                'password' => bcrypt($request->password),
+                'email' => $request->email,
+                'role' => 'user'
             ]);
             $user->save();
             Auth::login($user);
@@ -57,18 +51,19 @@ class AuthController extends Controller
         return [
             'status' => true,
             'message' => 'registration was successful',
-            'role'=>$user->role
+            'role' => $user->role
         ];
     }
 
-    public function loginUser(Request $request){
+    public function loginUser(Request $request)
+    {
         if (Auth::check()) {
             exit();
         }
 
-        $visitor=[
-            'name'=>$request->name,
-            'password'=>$request->password
+        $visitor = [
+            'name' => $request->name,
+            'password' => $request->password
         ];
 
         $validator = Validator::make($visitor, [
@@ -78,16 +73,14 @@ class AuthController extends Controller
 
         if ($validator->fails()) {
             return [
-                'status'=>'braked',
-                'errors'=>  $validator->messages()
+                'status' => 'braked',
+                'errors' => $validator->messages()
             ];
         }
-        $user = User::where('name', '=',$request->name)->first();
-        if($user&&Hash::check( $request->password ,$user->password)){
+        $user = User::where('name', '=', $request->name)->first();
+        if ($user && Hash::check($request->password, $user->password)) {
             Auth::login($user);
-        }
-        else
-        {
+        } else {
             return [
                 'status' => 'null',
                 'message' => 'wrong email or password',
@@ -97,26 +90,31 @@ class AuthController extends Controller
         return [
             'status' => 'login',
             'message' => 'login was successful',
-            'role'=>$user->role
+            'role' => $user->role
         ];
 
     }
 
-    public function getUserStatus(){
-        if(Auth::check()) {
-           $user = Auth::user();
-           return $user['role'];
+    public function getUserStatus()
+    {
+        if (Auth::check()) {
+            $user = Auth::user();
+            return $user['role'];
         }
 
         return 'guest';
     }
 
-    public function logOutUser(){
+    public function logOutUser()
+    {
         if (Auth::check()) {
             Auth::logout();
         }
 
-        return 'guest';
+        return [
+            'role'=>'guest',
+            'status'=>true
+        ];
     }
 
 }

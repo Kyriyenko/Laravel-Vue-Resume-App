@@ -15,6 +15,7 @@
 </template>
 
 <script>
+import authService from "../../services/authService";
 export default {
     name: "Header",
     data(){
@@ -23,33 +24,24 @@ export default {
             user:[]
         }
     },
-
     created() {
-        this.getUserStatus()
+        this.setUserStatus()
     },
     methods: {
         logOut(){
-            axios
-                .get(`/user/logout/`)
-                .then(response => {
-                    this.CurrentRole=response.data.toString()
-                })
-                .catch(error => console.log(error))
-                .finally(()=>{
+            authService.logOutUser().then(response => {
+                this.CurrentRole=response.data.toString()
+                this.CurrentRole=response.data.role.toString()
+                if(response.data.status){
                     sessionStorage.clear()
                     window.location.replace('/');
-                })
+                }
+            })
         },
-
-        getUserStatus(){
-            axios
-                .get(`/user/status/`)
-                .then(response => {
-                    this.CurrentRole=response.data.toString()
-                    sessionStorage.setItem('role',`${this.CurrentRole}`)
-                })
-                .catch(error => console.log(error))
-                .finally()
+        setUserStatus(){
+            authService.getUserStatus().then(response => {
+                this.CurrentRole=response.data.toString()
+            })
         },
     }
 }

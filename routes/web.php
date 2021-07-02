@@ -1,7 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\PostController;
+use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\AuthController;
 
 /*
@@ -15,12 +15,12 @@ use App\Http\Controllers\AuthController;
 |
 */
 
-Route::get('/post/network',[PostController::class, 'getNetworks']);
+Route::get('/profile/network',[ProfileController::class, 'getNetworks']);
 
-Route::post('post/network/delete',[PostController::class, 'deleteNetwork'])
+Route::post('profile/network/delete',[ProfileController::class, 'deleteNetwork'])
     ->middleware('admin');
 
-Route::post('post/network/add',[PostController::class, 'createNetwork'])
+Route::post('profile/network/add',[ProfileController::class, 'createNetwork'])
     ->middleware('admin');
 
 Route::post('/user/add',[AuthController::class, 'createUser'])
@@ -29,9 +29,9 @@ Route::post('/user/add',[AuthController::class, 'createUser'])
 Route::post('/user/login',[AuthController::class, 'loginUser'])
     ->middleware('guest');
 
-Route::post('/post',[PostController::class, 'showPost']);
+Route::post('/profile',[ProfileController::class, 'showPost']);
 
-Route::post('/post/edit/',[PostController::class, 'updatePost'])
+Route::post('/profile/edit/',[ProfileController::class, 'updatePost'])
     ->middleware('admin');
 
 Route::get('/user/status/',[AuthController::class, 'getUserStatus']);
